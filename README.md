@@ -111,3 +111,6 @@ Para este despliegue, si bien se completa hay dos actividades pendientes de docu
 
 1. La creación automatica de AWS InMemory DB for Redis para el almacenamiento de los tokens.
 2. La resolución de errores de permisos que han surgio en el despliegue.
+3. Para habilitar la observabilidad es necesario contar con una cuenta de [New Relic](https://newrelic.com/).
+
+![Observabilidad](./_assets/observability.png)
