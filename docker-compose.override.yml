@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  tokenizer-redis:
+    ports:
+      - 6379:6379
+
+  tokenizer-api:
+    image: ghcr.io/zodiacfireworks/culqi-challenge:dev
+    build:
+      context: .
+      dockerfile: ./Dockerfile.override
+    volumes:
+      - .:/app

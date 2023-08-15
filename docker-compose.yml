@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  tokenizer-redis:
+    image: library/redis:7.0-alpine
+    restart: unless-stopped
+    volumes:
+      - tokenizer-redis-data:/data
+    networks:
+      - tokenizer-network
+
+  tokenizer-api:
+    image: ghcr.io/zodiacfireworks/culqi-challenge:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - tokenizer-network
+    ports:
+      - 3000:3000
+    depends_on:
+      - tokenizer-redis
+
+networks:
+  tokenizer-network:
+    driver: bridge
+
+volumes:
+  tokenizer-redis-data:
+    driver: local
