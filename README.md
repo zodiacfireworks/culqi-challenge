@@ -75,13 +75,39 @@ docker compose exec tokenizer-service yarn run test:e2e
 
 ## Despliegue
 
+Para el despliegue en producción es necesario contar con [kubeclt](https://kubernetes.io/es/docs/tasks/tools/install-kubectl/) y [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html) instalados en el entorno local.
 
-## Notas y comentarios:
+Para desplegar en un entorno de EKS se deben de seguir los siguientes pasos.
 
-### Desarrollo
+1. Debe de construir la imagen de docker y subirla a un repositorio de ECR
 
-### Despliegue
+```bash
+export DOCKER_IMAGE="${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/tokenizer-service:latest"
 
-### Seguridad
+docker build -f Dockerfile -t "${DOCKER_IMAGE}" .
+docker push "${DOCKER_IMAGE}"
+```
 
-### Observabilidad
+2. Se debe de configurar el archivo `.env` en la capreta de `deployment`.
+
+```bash
+cp .env.template deployment/.env
+```
+
+Para este caso en particular el archivo debe de modificarse para incluir la palabra `export` antes de cada variable.
+
+3. Ingresar a la carpeta de `deployment` y ejecutar el script `deploy.sh`
+
+```bash
+cd deployment
+./deploy.sh
+```
+
+Esto desplegará un cluster de AKS en AWS y desplegará el servicio en el cluster.
+
+### Observaciones:
+
+Para este despliegue, si bien se completa hay dos actividades pendientes de documentación:
+
+1. La creación automatica de AWS InMemory DB for Redis para el almacenamiento de los tokens.
+2. La resolución de errores de permisos que han surgio en el despliegue.

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: culqi-challenge
+  name: culqi-challenge
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: culqi-challenge
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: culqi-challenge
+    spec:
+      containers:
+        - name: tokenizer-service
+          image: "${CONAINER_IMAGE}"
+          imagePullPolicy: Always
+          env:
+            - name: NODE_OPTIONS
+              value: "${NODE_OPTIONS}"
+            - name: REDIS_HOST
+              value: "${REDIS_HOST}"
+            - name: REDIS_PORT
+              value: "${REDIS_PORT}"
+            - name: REDIS_EXPIRATION_TIME
+              value: "${REDIS_EXPIRATION_TIME}"
+            - name: FAKE_SECRET_KEY
+              value: "${FAKE_SECRET_KEY}"
+            - name: FAKE_PUBLIC_KEY
+              value: "${FAKE_PUBLIC_KEY}"
+            - name: NEW_RELIC_ENABLED
+              value: "${NEW_RELIC_ENABLED}"
+            - name: NEW_RELIC_APP_NAME
+              value: "${NEW_RELIC_APP_NAME}"
+            - name: NEW_RELIC_LICENSE_KEY
+              value: "${NEW_RELIC_LICENSE_KEY}"
+            - name: NEW_RELIC_ALLOW_ALL_HEADERS
+              value: "${NEW_RELIC_ALLOW_ALL_HEADERS}"
+            - name: NEW_RELIC_DISTRIBUTED_TRACING_ENABLED
+              value: "${NEW_RELIC_DISTRIBUTED_TRACING_ENABLED}"
+            - name: NEW_RELIC_APPLICATION_LOGGING_ENABLED
+              value: "${NEW_RELIC_APPLICATION_LOGGING_ENABLED}"
+            - name: NEW_RELIC_APPLICATION_LOGGING_METRICS_ENABLED
+              value: "${NEW_RELIC_APPLICATION_LOGGING_METRICS_ENABLED}"
+            - name: NEW_RELIC_APPLICATION_LOGGING_FORWARDING_ENABLED
+              value: "${NEW_RELIC_APPLICATION_LOGGING_FORWARDING_ENABLED}"
+            - name: NEW_RELIC_APPLICATION_LOGGING_LOCAL_DECORATING_ENABLED
+              value: "${NEW_RELIC_APPLICATION_LOGGING_LOCAL_DECORATING_ENABLED}"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+          ports:
+            - containerPort: 3000
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: culqi-challenge
+  labels:
+    run: culqi-challenge
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+  selector:
+    app: culqi-challenge
+  type: LoadBalancer
